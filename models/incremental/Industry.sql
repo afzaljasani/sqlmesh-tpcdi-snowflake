@@ -1,9 +1,9 @@
 MODEL (
-  name tobiko_cloud_tpcdi.industry,
+  name sqlmesh_tpcdi.industry,
   kind FULL,
 );
 
 select *
-from tpcdi.tpcdi_100_dbsql_100.industry
+from tpcdi.tpcdi_100_dbsql_100_stage.industry
 ;
 

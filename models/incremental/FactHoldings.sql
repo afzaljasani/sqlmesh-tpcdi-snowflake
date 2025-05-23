@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.factholdings,
+  name sqlmesh_tpcdi.factholdings,
   kind FULL,
   audits (
     NOT_NULL_NON_BLOCKING(columns = (currentprice))
@@ -25,8 +25,8 @@ FROM (
   FROM tpcdi.tpcdi_100_dbsql_100_stage.v_holdinghistory
   UNION ALL
   SELECT * except(cdc_flag, cdc_dsn)
-  FROM tobiko_cloud_tpcdi.holdingincremental) hh
+  FROM sqlmesh_tpcdi.holdingincremental) hh
 -- Converts to LEFT JOIN if this is run as DQ EDITION. It is possible, because of the issues upstream with DimSecurity/DimAccount on "some" scale factors, that DimTrade may be missing some rows.
 --${dq_left_flg}
- LEFT JOIN tobiko_cloud_tpcdi.dimtrade dt
+ LEFT JOIN sqlmesh_tpcdi.dimtrade dt
   ON tradeid = hh_t_id

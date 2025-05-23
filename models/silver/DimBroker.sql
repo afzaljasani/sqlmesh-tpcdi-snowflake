@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.dimbroker,
+  name sqlmesh_tpcdi.dimbroker,
   kind FULL,
 );
 
@@ -17,8 +17,8 @@ SELECT
   employeephone phone,
   true iscurrent,
   0 batchid,
-  (SELECT min(to_date(datevalue)) as effectivedate FROM tobiko_cloud_tpcdi.DimDate) effectivedate,
+  (SELECT min(to_date(datevalue)) as effectivedate FROM sqlmesh_tpcdi.DimDate) effectivedate,
   date('9999-12-31') enddate,
-  bigint(concat(date_format(enddate, 'yyyyMMdd'), cast(brokerid as string))) as sk_brokerid
+  concat(brokerid, '-', enddate) as sk_brokerid
 FROM  tpcdi.tpcdi_100_dbsql_100_stage.v_hr
 WHERE employeejobcode = 314

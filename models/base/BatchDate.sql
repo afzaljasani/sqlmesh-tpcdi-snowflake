@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.batchdate,
+  name sqlmesh_tpcdi.batchdate,
   kind FULL,
 );
 

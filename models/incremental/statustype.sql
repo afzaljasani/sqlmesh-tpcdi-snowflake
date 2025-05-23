@@ -1,8 +1,8 @@
 MODEL (
-  name tobiko_cloud_tpcdi.statustype,
+  name sqlmesh_tpcdi.statustype,
   kind FULL,
 );
 
 select *
-from tpcdi.tpcdi_100_dbsql_100.statustype
+from tpcdi.tpcdi_100_dbsql_100_stage.statustype
 ;

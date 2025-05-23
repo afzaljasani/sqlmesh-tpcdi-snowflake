@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.dimaccount,
+  name sqlmesh_tpcdi.dimaccount,
   kind FULL,
   audits (
     NOT_NULL_NON_BLOCKING(columns = (sk_customerid, sk_brokerid))
@@ -16,15 +16,15 @@ SELECT
   a.status,
   a.batchid,
   a.effectivedate,
-  bigint(concat(date_format(a.effectivedate, 'yyyyMMdd'), cast(a.accountid as string))) as sk_accountid,
+  concat(a.accountid, '-', a.effectivedate) as sk_accountid,
   a.enddate,
-  '13' as new_column
+  '4' as new_column
 FROM (
   SELECT
     a.* except(effectivedate, enddate, customerid),
     c.sk_customerid,
-    if(a.effectivedate < c.effectivedate, c.effectivedate, a.effectivedate) effectivedate,
-    if(a.enddate > c.enddate, c.enddate, a.enddate) enddate
+    iff(a.effectivedate < c.effectivedate, c.effectivedate, a.effectivedate) effectivedate,
+    iff(a.enddate > c.enddate, c.enddate, a.enddate) enddate
   FROM (
     SELECT *
     FROM (
@@ -52,7 +52,7 @@ FROM (
           status,
           update_ts,
           1 batchid
-        FROM tobiko_cloud_tpcdi.customermgmtview c
+        FROM sqlmesh_tpcdi.customermgmtview c
         WHERE ActionType NOT IN ('UPDCUST', 'INACT')
         UNION ALL
         SELECT
@@ -62,22 +62,22 @@ FROM (
           TaxStatus,
           a.brokerid,
           st_name as status,
-          TIMESTAMP(bd.batchdate) update_ts,
+          TO_TIMESTAMP(bd.batchdate) update_ts,
           a.batchid
-        FROM tobiko_cloud_tpcdi.accountincremental a
-        JOIN tobiko_cloud_tpcdi.batchdate bd
+        FROM sqlmesh_tpcdi.accountincremental a
+        JOIN sqlmesh_tpcdi.batchdate bd
           ON a.batchid = bd.batchid
-        JOIN tobiko_cloud_tpcdi.statustype st 
+        JOIN sqlmesh_tpcdi.statustype st 
           ON a.status = st.st_id
       ) a
     ) a
     WHERE a.effectivedate < a.enddate
   ) a
-  FULL OUTER JOIN tobiko_cloud_tpcdi.dimcustomerstg c 
+  FULL OUTER JOIN sqlmesh_tpcdi.dimcustomerstg c 
     ON 
       a.customerid = c.customerid
       AND c.enddate > a.effectivedate
       AND c.effectivedate < a.enddate
 ) a
-LEFT JOIN tobiko_cloud_tpcdi.dimbroker b 
+LEFT JOIN sqlmesh_tpcdi.dimbroker b 
   ON a.brokerid = b.brokerid;

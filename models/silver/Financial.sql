@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.financial,
+  name sqlmesh_tpcdi.financial,
   kind FULL,
   audits (
     NOT_NULL(columns = (sk_companyid))
@@ -43,7 +43,7 @@ FROM (
       cast(substring(value, 143, 13) AS BIGINT) AS fi_out_basic,
       cast(substring(value, 156, 13) AS BIGINT) AS fi_out_dilut, 
       trim(substring(value, 169, 60)) AS conameorcik
-    FROM tobiko_cloud_tpcdi.finwire
+    FROM sqlmesh_tpcdi.finwire
     WHERE rectype = 'FIN'
   ) f 
 ) f
@@ -53,14 +53,14 @@ JOIN (
     name conameorcik,
     EffectiveDate,
     EndDate
-  FROM tobiko_cloud_tpcdi.dimcompany
+  FROM sqlmesh_tpcdi.dimcompany
   UNION ALL
   SELECT 
     sk_companyid,
     cast(companyid as string) conameorcik,
     EffectiveDate,
     EndDate
-  FROM tobiko_cloud_tpcdi.dimcompany
+  FROM sqlmesh_tpcdi.dimcompany
 ) dc 
 ON
   f.conameorcik = dc.conameorcik 

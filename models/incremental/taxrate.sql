@@ -1,9 +1,9 @@
 MODEL (
-  name tobiko_cloud_tpcdi.taxrate,
+  name sqlmesh_tpcdi.taxrate,
   kind FULL,
 );
 
 select *
-from tpcdi.tpcdi_100_dbsql_100.taxrate
+from tpcdi.tpcdi_100_dbsql_100_stage.taxrate
 ;
 

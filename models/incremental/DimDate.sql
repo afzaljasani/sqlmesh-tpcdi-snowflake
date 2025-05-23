@@ -1,9 +1,9 @@
 MODEL (
-  name tobiko_cloud_tpcdi.dimdate,
+  name sqlmesh_tpcdi.dimdate,
   kind FULL,
 );
 
 select *
-from tpcdi.tpcdi_100_dbsql_100.dimdate
+from tpcdi.tpcdi_100_dbsql_100_stage.dimdate
 ;
 

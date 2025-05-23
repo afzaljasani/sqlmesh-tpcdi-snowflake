@@ -5,7 +5,9 @@ gateways:
         account: {{ env_var('SNOWFLAKE_ACCOUNT') }}
         user: {{ env_var('SNOWFLAKE_USER') }}
         password: {{ env_var('SNOWFLAKE_PW') }}
-        database: tpcdi
+        database: TPCDI
+        warehouse: COMPUTE_WH
+        role: ACCOUNTADMIN
       state_connection:
         type: duckdb
         database: state.db
@@ -17,5 +19,5 @@ model_defaults:
 
 variables:
   raw_schema: tpcdi_100_dbsql_100
-  catalog: tpcdi
+
   

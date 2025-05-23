@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.finwire,
+  name sqlmesh_tpcdi.finwire,
   kind VIEW,
 );
 

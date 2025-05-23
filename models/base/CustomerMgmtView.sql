@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.customermgmtview,
+  name sqlmesh_tpcdi.customermgmtview,
   kind VIEW,
 );
 
