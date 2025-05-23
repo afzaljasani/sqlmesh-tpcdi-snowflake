@@ -1,9 +1,9 @@
 MODEL (
-  name tobiko_cloud_tpcdi.tradetype,
+  name sqlmesh_tpcdi.tradetype,
   kind FULL,
 );
 
 select *
-from tpcdi.tpcdi_100_dbsql_100.tradetype
+from tpcdi.tpcdi_100_dbsql_100_stage.tradetype
 ;
 

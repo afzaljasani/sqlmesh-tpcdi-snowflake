@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.accountincremental,
+  name sqlmesh_tpcdi.accountincremental,
   kind VIEW,
 );
 

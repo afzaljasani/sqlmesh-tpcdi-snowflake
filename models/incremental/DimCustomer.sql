@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.dimcustomer,
+  name sqlmesh_tpcdi.dimcustomer,
   kind FULL,
   audits (
     NOT_NULL_NON_BLOCKING(columns = (
@@ -43,12 +43,12 @@ SELECT
   c.batchid,
   c.effectivedate,
   c.enddate
-FROM tobiko_cloud_tpcdi.DimCustomerStg AS c
-LEFT JOIN tobiko_cloud_tpcdi.TaxRate AS r_lcl
+FROM sqlmesh_tpcdi.DimCustomerStg AS c
+LEFT JOIN sqlmesh_tpcdi.TaxRate AS r_lcl
   ON c.LCL_TX_ID = r_lcl.TX_ID
-LEFT JOIN tobiko_cloud_tpcdi.TaxRate AS r_nat
+LEFT JOIN sqlmesh_tpcdi.TaxRate AS r_nat
   ON c.NAT_TX_ID = r_nat.TX_ID
-LEFT JOIN tobiko_cloud_tpcdi.prospect AS p
+LEFT JOIN sqlmesh_tpcdi.prospect AS p
   ON UPPER(p.lastname) = UPPER(c.lastname)
   AND UPPER(p.firstname) = UPPER(c.firstname)
   AND UPPER(p.addressline1) = UPPER(c.addressline1)

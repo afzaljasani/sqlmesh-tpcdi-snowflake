@@ -1,8 +1,7 @@
 MODEL (
-  name tobiko_cloud_tpcdi.dimcustomerstg,
+  name sqlmesh_tpcdi.dimcustomerstg,
   kind FULL,
 );
-
 
 SELECT * FROM (
   SELECT
@@ -100,8 +99,8 @@ SELECT * FROM (
       nat_tx_id,
       1 batchid,
       update_ts,
-      bigint(concat(date_format(update_ts, 'yyyyMMdd'), cast(customerid as string))) as sk_customerid
-    FROM tobiko_cloud_tpcdi.customermgmtview c
+      concat(customerid, '-', update_ts) as sk_customerid
+    FROM sqlmesh_tpcdi.customermgmtview c
     WHERE ActionType in ('NEW', 'INACT', 'UPDCUST')
     UNION ALL
     SELECT
@@ -129,12 +128,12 @@ SELECT * FROM (
       c.LCL_TX_ID, 
       c.NAT_TX_ID,
       c.batchid,
-      timestamp(bd.batchdate) update_ts,
-      bigint(concat(date_format(update_ts, 'yyyyMMdd'), cast(customerid as string))) as sk_customerid
-    FROM tobiko_cloud_tpcdi.customerincremental c
-    JOIN tobiko_cloud_tpcdi.batchdate bd
+      to_timestamp(bd.batchdate) update_ts,
+      concat(c.customerid, '-', update_ts)as sk_customerid
+    FROM sqlmesh_tpcdi.customerincremental c
+    JOIN sqlmesh_tpcdi.batchdate bd
       ON c.batchid = bd.batchid
-    JOIN tobiko_cloud_tpcdi.statustype s 
+    JOIN sqlmesh_tpcdi.statustype s 
       ON c.status = s.st_id
   ) c
   )

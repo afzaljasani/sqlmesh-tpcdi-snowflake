@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.tradeincremental,
+  name sqlmesh_tpcdi.tradeincremental,
   kind VIEW,
 );
 

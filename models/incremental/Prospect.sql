@@ -1,9 +1,7 @@
 MODEL (
-  name tobiko_cloud_tpcdi.prospect,
+  name sqlmesh_tpcdi.prospect,
   kind FULL,
 );
-
-
 
 SELECT 
   agencyid,
@@ -32,28 +30,27 @@ SELECT
   employer,
   numbercreditcards,
   networth,
-  if(
-    isnotnull(
-      if(networth > 1000000 or income > 200000,"HighValue+","") || 
-      if(numberchildren > 3 or numbercreditcards > 5,"Expenses+","") ||
-      if(age > 45, "Boomer+", "") ||
-      if(income < 50000 or creditrating < 600 or networth < 100000, "MoneyAlert+","") ||
-      if(numbercars > 3 or numbercreditcards > 7, "Spender+","") ||
-      if(age < 25 and networth > 1000000, "Inherited+","")),
+  iff(
+      iff(networth > 1000000 or income > 200000, 'HighValue+','') || 
+      iff(numberchildren > 3 or numbercreditcards > 5,'Expenses+','') ||
+      iff(age > 45, 'Boomer+', '') ||
+      iff(income < 50000 or creditrating < 600 or networth < 100000, 'MoneyAlert+','') ||
+      iff(numbercars > 3 or numbercreditcards > 7, 'Spender+','') ||
+      iff(age < 25 and networth > 1000000, 'Inherited+','') IS NOT NULL,
     left(
-      if(networth > 1000000 or income > 200000,"HighValue+","") || 
-      if(numberchildren > 3 or numbercreditcards > 5,"Expenses+","") ||
-      if(age > 45, "Boomer+", "") ||
-      if(income < 50000 or creditrating < 600 or networth < 100000, "MoneyAlert+","") ||
-      if(numbercars > 3 or numbercreditcards > 7, "Spender+","") ||
-      if(age < 25 and networth > 1000000, "Inherited+",""),
+      iff(networth > 1000000 or income > 200000,'HighValue+','') || 
+      iff(numberchildren > 3 or numbercreditcards > 5,'Expenses+','') ||
+      iff(age > 45, 'Boomer+', '') ||
+      iff(income < 50000 or creditrating < 600 or networth < 100000, 'MoneyAlert+','') ||
+      iff(numbercars > 3 or numbercreditcards > 7, 'Spender+','') ||
+      iff(age < 25 and networth > 1000000, 'Inherited+',''),
       length(
-        if(networth > 1000000 or income > 200000,"HighValue+","") || 
-        if(numberchildren > 3 or numbercreditcards > 5,"Expenses+","") ||
-        if(age > 45, "Boomer+", "") ||
-        if(income < 50000 or creditrating < 600 or networth < 100000, "MoneyAlert+","") ||
-        if(numbercars > 3 or numbercreditcards > 7, "Spender+","") ||
-        if(age < 25 and networth > 1000000, "Inherited+",""))
+        iff(networth > 1000000 or income > 200000,'HighValue+','') || 
+        iff(numberchildren > 3 or numbercreditcards > 5,'Expenses+','') ||
+        iff(age > 45, 'Boomer+', '') ||
+        iff(income < 50000 or creditrating < 600 or networth < 100000, 'MoneyAlert+','') ||
+        iff(numbercars > 3 or numbercreditcards > 7, 'Spender+','') ||
+        iff(age < 25 and networth > 1000000, 'Inherited+',''))
       -1),
     NULL) marketingnameplate
 FROM (
@@ -84,7 +81,7 @@ FROM (
       numbercreditcards,
       networth,
       min(batchid) batchid
-    FROM tobiko_cloud_tpcdi.prospectraw p
+    FROM sqlmesh_tpcdi.prospectraw p
     GROUP BY
       agencyid,
       lastname,
@@ -113,16 +110,16 @@ JOIN (
   SELECT 
     sk_dateid,
     batchid
-  FROM tobiko_cloud_tpcdi.batchdate b 
-  JOIN tobiko_cloud_tpcdi.dimdate d 
+  FROM sqlmesh_tpcdi.batchdate b 
+  JOIN sqlmesh_tpcdi.dimdate d 
     ON b.batchdate = d.datevalue) recdate
   ON p.recordbatchid = recdate.batchid
 JOIN (
   SELECT 
     sk_dateid,
     batchid
-  FROM tobiko_cloud_tpcdi.batchdate b 
-  JOIN tobiko_cloud_tpcdi.dimdate d 
+  FROM sqlmesh_tpcdi.batchdate b 
+  JOIN sqlmesh_tpcdi.dimdate d 
     ON b.batchdate = d.datevalue) origdate
   ON p.batchid = origdate.batchid
 LEFT JOIN (
@@ -133,7 +130,7 @@ LEFT JOIN (
     addressline1,
     addressline2,
     postalcode
-  FROM tobiko_cloud_tpcdi.dimcustomerstg
+  FROM sqlmesh_tpcdi.dimcustomerstg
   WHERE iscurrent) c
   ON 
     upper(p.LastName) = upper(c.lastname)

@@ -1,12 +1,10 @@
 MODEL (
-  name tobiko_cloud_tpcdi.dimsecurity,
+  name sqlmesh_tpcdi.dimsecurity,
   kind FULL,
   audits (
     NOT_NULL_NON_BLOCKING(columns = (sk_companyid))
 )
 );
-
-
 SELECT 
 
   Symbol,
@@ -22,7 +20,7 @@ SELECT
   if(enddate = date('9999-12-31'), True, False) iscurrent,
   1 batchid,
   effectivedate,
-  monotonically_increasing_id() as sk_securityid,
+  concat(exchangeid, '-', effectivedate) as sk_securityid, 
   enddate
 FROM (
   SELECT 
@@ -62,10 +60,10 @@ FROM (
     to_date(substring(value, 123, 8), 'yyyyMMdd') AS firsttradeonexchange,
     cast(substring(value, 131, 12) AS DOUBLE) AS Dividend,
     trim(substring(value, 143, 60)) AS conameorcik
-      FROM tobiko_cloud_tpcdi.finwire
+      FROM sqlmesh_tpcdi.finwire
       WHERE rectype = 'SEC'
       ) fws
-    JOIN tobiko_cloud_tpcdi.statustype s
+    JOIN sqlmesh_tpcdi.statustype s
       ON s.ST_ID = fws.status
     ) fws
   JOIN (
@@ -74,14 +72,14 @@ FROM (
       name conameorcik,
       EffectiveDate,
       EndDate
-    FROM tobiko_cloud_tpcdi.dimcompany
+    FROM sqlmesh_tpcdi.dimcompany
     UNION ALL
     SELECT 
       sk_companyid,
       cast(companyid as string) conameorcik,
       EffectiveDate,
       EndDate
-    FROM tobiko_cloud_tpcdi.dimcompany
+    FROM sqlmesh_tpcdi.dimcompany
   ) dc 
   ON
     fws.conameorcik = dc.conameorcik 

@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.watchincremental,
+  name sqlmesh_tpcdi.watchincremental,
   kind VIEW,
 );
 

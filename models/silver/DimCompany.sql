@@ -1,8 +1,7 @@
 MODEL (
-  name tobiko_cloud_tpcdi.dimcompany,
+  name sqlmesh_tpcdi.dimcompany,
   kind FULL,
 );
-
 
 SELECT 
   * FROM (
@@ -33,7 +32,7 @@ SELECT
     nvl2(lead(recdate) OVER (PARTITION BY cik ORDER BY recdate), true, false) iscurrent,
     1 batchid,
     date(recdate) effectivedate,
-    bigint(concat(date_format(effectivedate, 'yyyyMMdd'), cast(companyid as string))) as sk_companyid,
+    concat(companyid, '-', effectivedate) sk_companyid,
     coalesce(
       lead(date(recdate)) OVER (PARTITION BY cik ORDER BY recdate),
       cast('9999-12-31' as date)) enddate
@@ -45,7 +44,7 @@ SELECT
       trim(substring(value, 71, 4)) AS Status,
       trim(substring(value, 75, 2)) AS IndustryID,
       trim(substring(value, 77, 4)) AS SPrating,
-      to_date(try_to_timestamp(substring(value, 81, 8), 'yyyyMMdd')) AS FoundingDate,
+      to_date(iff(trim(substring(value, 81, 8))='',NULL,substring(value, 81, 8)), 'yyyyMMdd') AS FoundingDate,
       trim(substring(value, 89, 80)) AS AddrLine1,
       trim(substring(value, 169, 80)) AS AddrLine2,
       trim(substring(value, 249, 12)) AS PostalCode,
@@ -54,9 +53,9 @@ SELECT
       trim(substring(value, 306, 24)) AS Country,
       trim(substring(value, 330, 46)) AS CEOname,
       trim(substring(value, 376, 150)) AS Description
-    FROM tobiko_cloud_tpcdi.finwire
+    FROM sqlmesh_tpcdi.finwire
     WHERE rectype = 'CMP'
        ) cmp
-  JOIN tobiko_cloud_tpcdi.StatusType st ON cmp.status = st.st_id
-  JOIN tobiko_cloud_tpcdi.Industry ind ON cmp.industryid = ind.in_id
+  JOIN sqlmesh_tpcdi.StatusType st ON cmp.status = st.st_id
+  JOIN sqlmesh_tpcdi.Industry ind ON cmp.industryid = ind.in_id
 )

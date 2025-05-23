@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.prospectraw,
+  name sqlmesh_tpcdi.prospectraw,
   kind VIEW,
 );
 

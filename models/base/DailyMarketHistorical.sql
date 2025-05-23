@@ -1,5 +1,5 @@
 MODEL (
-  name tobiko_cloud_tpcdi.dailymarkethistorical,
+  name sqlmesh_tpcdi.dailymarkethistorical,
   kind VIEW,
 );
 
